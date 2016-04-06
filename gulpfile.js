@@ -9,6 +9,7 @@ var livereload = require('gulp-livereload');
 var uglify = require('gulp-uglify');
 var babel = require('gulp-babel');
 var sourcemaps = require('gulp-sourcemaps');
+var cssnano = require('gulp-cssnano');
 
 // error handler
 var plumberErrorHandler = {errorHandler: notify.onError({
@@ -48,7 +49,14 @@ gulp.task('init', function(){
 gulp.task('sass', function(){
 	gulp.src('./css/src/*.scss')
 		.pipe(plumber(plumberErrorHandler))
-		.pipe(sass())
+		.pipe(sourcemaps.init())
+		.pipe(sass.sync({
+      		outputStyle: 'expanded',//comment this 3 lines an uncomment cssnano for minify the css
+      		precision: 10, //
+      		includePaths: ['.'] //
+    	}))
+        // .pipe(cssnano())
+		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('./css'))
 		.pipe(livereload());
 });
@@ -94,10 +102,6 @@ gulp.task('watch', function(){
 
 
 gulp.task('default', ['sass', 'js', 'img', 'php', 'watch']); 
-
-
-
-
 
 
 
