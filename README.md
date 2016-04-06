@@ -10,9 +10,11 @@ to run this:
 
 4. Run gulp init to create the new theme.
 
-5. Run gulp to have the liveReload server running
+5. Copy the node_modules folder into the new theme folder
 
-6. Have fun editing your new theme for wordpress
+6. Go to the new theme directory and run gulp to have the liveReload server running
+
+7. Have fun editing your new theme for wordpress
 
 
 
