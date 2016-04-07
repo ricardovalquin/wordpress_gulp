@@ -5,11 +5,13 @@ var concat = require('gulp-concat');
 var imagemin = require('gulp-imagemin');
 var plumber = require('gulp-plumber');
 var notify = require('gulp-notify');
-var livereload = require('gulp-livereload');
 var uglify = require('gulp-uglify');
 var babel = require('gulp-babel');
 var sourcemaps = require('gulp-sourcemaps');
 var cssnano = require('gulp-cssnano');
+
+var browserSync = require('browser-sync').create();
+var reload = browserSync.reload;
 
 // error handler
 var plumberErrorHandler = {errorHandler: notify.onError({
@@ -25,6 +27,8 @@ var cpr = require('cpr');
 var themeName = json.read('./package.json').get('themeName');
 var themeDir = '../' + themeName;
 
+
+// Init task to create a new theme
 gulp.task('init', function(){
 	cpr('./theme_boilerplate', themeDir, function(err, files){
 		console.log('theme files and directories structure succefully created');
@@ -58,8 +62,8 @@ gulp.task('sass', function(){
         // .pipe(cssnano())
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('./css'))
-		.pipe(livereload());
-});
+		.pipe(reload({stream: true}));
+	});
 
 gulp.task('js', function(){
 	gulp.src('./js/src/*.js')
@@ -72,8 +76,8 @@ gulp.task('js', function(){
 		.pipe(uglify())
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('./js'))
-		.pipe(livereload());
-});
+		.pipe(reload({stream: true}));
+	});
 
 gulp.task('img', function(){
 	gulp.src('./img/src/*.{png,jpg,gif}')
@@ -83,25 +87,21 @@ gulp.task('img', function(){
 			progressive: true
 		}))
 		.pipe(gulp.dest('./img'))
-		.pipe(livereload());
-});
+		.pipe(reload({stream: true}));	
+	});
 
-gulp.task('php', function(){
-	gulp.src('./*.php')
-		.pipe(livereload());
-});
-
-gulp.task('watch', function(){
-	livereload.listen();
+gulp.task('serve', ['sass', 'js', 'img'], function(){
+	browserSync.init({
+        proxy: 'http://localhost:8888/'
+    });
 	gulp.watch('./css/src/*.scss', ['sass']);
 	gulp.watch('./js/src/*.js', ['js']);
 	gulp.watch('./img/src/*.{png,jpg,gif}', ['img']);
-	gulp.watch('./*.php', ['php']);
+	gulp.watch('./*.php').on('change', reload);
+	gulp.watch('./**/*.php').on('change', reload);
 });
 
-
-
-gulp.task('default', ['sass', 'js', 'img', 'php', 'watch']); 
+gulp.task('default', ['serve']); 
 
 
 
