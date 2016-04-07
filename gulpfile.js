@@ -1,6 +1,5 @@
 var gulp = require('gulp');
 var sass = require('gulp-sass');
-var jshint = require('gulp-jshint');
 var concat = require('gulp-concat');
 var imagemin = require('gulp-imagemin');
 var plumber = require('gulp-plumber');
@@ -9,6 +8,7 @@ var uglify = require('gulp-uglify');
 var babel = require('gulp-babel');
 var sourcemaps = require('gulp-sourcemaps');
 var cssnano = require('gulp-cssnano');
+var eslint = require('gulp-eslint');
 
 var browserSync = require('browser-sync').create();
 var reload = browserSync.reload;
@@ -70,8 +70,6 @@ gulp.task('js', function(){
 		.pipe(plumber(plumberErrorHandler))
 		.pipe(sourcemaps.init())
 		.pipe(babel())
-		.pipe(jshint())
-		.pipe(jshint.reporter('fail'))
 		.pipe(concat('theme.js'))
 		.pipe(uglify())
 		.pipe(sourcemaps.write('.'))
@@ -90,12 +88,19 @@ gulp.task('img', function(){
 		.pipe(reload({stream: true}));	
 	});
 
-gulp.task('serve', ['sass', 'js', 'img'], function(){
+gulp.task('lint', function(){
+	gulp.src(['./js/*.js','!node_modules/**'])
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
+});
+
+gulp.task('serve', ['sass', 'js', 'img', 'lint'], function(){
 	browserSync.init({
         proxy: 'http://localhost:8888/'
     });
 	gulp.watch('./css/src/*.scss', ['sass']);
-	gulp.watch('./js/src/*.js', ['js']);
+	gulp.watch('./js/src/*.js', ['lint', 'js']);
 	gulp.watch('./img/src/*.{png,jpg,gif}', ['img']);
 	gulp.watch('./*.php').on('change', reload);
 	gulp.watch('./**/*.php').on('change', reload);
