@@ -63,7 +63,9 @@ gulp.task('sass', function(){
         // .pipe(cssnano())
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('./css'))
-		.pipe(reload({stream: true}));
+		.pipe(reload({stream: true}))
+		.pipe(notify({ message: 'Custom sass task complete', onLast: true }));
+
 	});
 
 gulp.task('js', () => {
@@ -75,7 +77,9 @@ gulp.task('js', () => {
 		.pipe(uglify())
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('./js'))
-		.pipe(reload({stream: true}));
+		.pipe(reload({stream: true}))
+		.pipe(notify({ message: 'Custom scripts task complete', onLast: true }));
+
 	});
 
 gulp.task('img', () => {
@@ -86,7 +90,9 @@ gulp.task('img', () => {
 			progressive: true
 		}))
 		.pipe(gulp.dest('./img'))
-		.pipe(reload({stream: true}));	
+		.pipe(reload({stream: true}))	
+		.pipe(notify({ message: 'Custom image task complete', onLast: true }));
+
 	});
 
 gulp.task('lint', () => {
