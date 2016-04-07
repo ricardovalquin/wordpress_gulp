@@ -1,48 +1,49 @@
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-var concat = require('gulp-concat');
-var imagemin = require('gulp-imagemin');
-var plumber = require('gulp-plumber');
-var notify = require('gulp-notify');
-var uglify = require('gulp-uglify');
-var babel = require('gulp-babel');
-var sourcemaps = require('gulp-sourcemaps');
-var cssnano = require('gulp-cssnano');
-var eslint = require('gulp-eslint');
+import gulp from 'gulp';
+import sass from 'gulp-sass';
+import concat from 'gulp-concat';
+import imagemin from 'gulp-imagemin';
+import plumber from 'gulp-plumber';
+import notify from 'gulp-notify';
+import uglify from 'gulp-uglify';
+import babel from 'gulp-babel';
+import sourcemaps from 'gulp-sourcemaps';
+import cssnano from 'gulp-cssnano';
+import eslint from 'gulp-eslint';
 
-var browserSync = require('browser-sync').create();
-var reload = browserSync.reload;
+import browserSync from 'browser-sync';
+// browserSync.create;
+const reload = browserSync.reload;
 
 // error handler
-var plumberErrorHandler = {errorHandler: notify.onError({
+let plumberErrorHandler = {errorHandler: notify.onError({
 	title: 'Gulp',
 	message: 'Error <%= error.message %>'
 	})
 };
 
 // boilerplate a new theme
-var json = require('json-file');
-var cpr = require('cpr');
+import json from 'json-file';
+import cpr from 'cpr';
 
-var themeName = json.read('./package.json').get('themeName');
-var themeDir = '../' + themeName;
+let themeName = json.read('./package.json').get('themeName');
+let themeDir = '../' + themeName;
 
 
 // Init task to create a new theme
-gulp.task('init', function(){
-	cpr('./theme_boilerplate', themeDir, function(err, files){
+gulp.task('init', () => {
+	cpr('./theme_boilerplate', themeDir, (err, files) => {
 		console.log('theme files and directories structure succefully created');
 	});
 	
-	cpr('./package.json', themeDir, function(err, files){
+	cpr('./package.json', themeDir, (err, files) => {
 		console.log('package.json file succefully copied');
 	});
 
-	cpr('./gulpfile.js', themeDir, function(err, files){
+	cpr('./gulpfile.js', themeDir, (err, files) => {
 		console.log('gulpfile.js file succefully copied');
 	});
 
-	cpr('./.babelrc', themeDir, function(err, files){
+	cpr('./.babelrc', themeDir, (err, files) => {
 		console.log('.babelrc file succefully copied');
 	});
 
@@ -65,7 +66,7 @@ gulp.task('sass', function(){
 		.pipe(reload({stream: true}));
 	});
 
-gulp.task('js', function(){
+gulp.task('js', () => {
 	gulp.src('./js/src/*.js')
 		.pipe(plumber(plumberErrorHandler))
 		.pipe(sourcemaps.init())
@@ -77,7 +78,7 @@ gulp.task('js', function(){
 		.pipe(reload({stream: true}));
 	});
 
-gulp.task('img', function(){
+gulp.task('img', () => {
 	gulp.src('./img/src/*.{png,jpg,gif}')
 		.pipe(plumber(plumberErrorHandler))
 		.pipe(imagemin({
@@ -88,14 +89,14 @@ gulp.task('img', function(){
 		.pipe(reload({stream: true}));	
 	});
 
-gulp.task('lint', function(){
+gulp.task('lint', () => {
 	gulp.src(['./js/*.js','!node_modules/**'])
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(eslint.failAfterError());
 });
 
-gulp.task('serve', ['sass', 'js', 'img', 'lint'], function(){
+gulp.task('serve', ['sass', 'js', 'img', 'lint'], () => {
 	browserSync.init({
         proxy: 'http://localhost:8888/'
     });
