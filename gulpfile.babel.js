@@ -39,7 +39,7 @@ gulp.task('init', () => {
 		console.log('package.json file succefully copied');
 	});
 
-	cpr('./gulpfile.js', themeDir, (err, files) => {
+	cpr('./gulpfile.babel.js', themeDir, (err, files) => {
 		console.log('gulpfile.js file succefully copied');
 	});
 
@@ -51,7 +51,7 @@ gulp.task('init', () => {
 
 // tasks
 
-gulp.task('sass', function(){
+gulp.task('sass', () => {
 	gulp.src('./css/src/*.scss')
 		.pipe(plumber(plumberErrorHandler))
 		.pipe(sourcemaps.init())
